@@ -18,8 +18,10 @@
 */
 
 #include "debug.h"
-
+#include "custom_def.h"
+#include "dhry.h"
 /* Global define */
+extern void Proc_5 (void);
 
 /* Global Variable */
 
@@ -50,21 +52,22 @@ void GPIO_Toggle_INIT (void) {
 int main (void) {
     u8 i = 0;
 
+    GPIO_Toggle_INIT();
     NVIC_PriorityGroupConfig (NVIC_PriorityGroup_2);
     SystemCoreClockUpdate();
     SysTick_Init();
     USART_Printf_Init (115200);
-    printf ("SystemClk:%d\r\n", SystemCoreClock);
-    printf ("ChipID:%08x\r\n", DBGMCU_GetCHIPID());
 
-    printf ("GPIO Toggle TEST\r\n");
-    GPIO_Toggle_INIT();
+    printf ("SystemClk:%u ChipID:%08x %s\r\n", SystemCoreClock, DBGMCU_GetCHIPID(), COMPILER_NAME);
+    printf ("addr: %08X %08X\n", (uint32_t)(&dhry_main), (uint32_t)(&Proc_5));
 
     while (1) {
-        Delay_MS (1000);
-        GPIO_WriteBit (GPIOA, GPIO_Pin_0, (i == 0) ? (i = Bit_SET) : (i = Bit_RESET));
+        Clear_SysTick_MS();
+        dhry_main (SystemCoreClock);
+        printf ("clk:%u id:%08x %s\r\n", SystemCoreClock, DBGMCU_GetCHIPID(), COMPILER_NAME);
+        printf ("addr: %08X %08X\n", (uint32_t)(&dhry_main), (uint32_t)(&Proc_5));
 
-        printf ("SystemClk:%d\r\n", SystemCoreClock);
-        printf ("ChipID:%08x %u\r\n", DBGMCU_GetCHIPID(), Get_SysTick_MS());
+        HAL_Delay (configTICK_RATE_HZ * 20);
+        GPIO_WriteBit (GPIOC, GPIO_Pin_13, (i == 0) ? (i = Bit_SET) : (i = Bit_RESET));
     }
 }

@@ -1,5 +1,4 @@
-Debug
-Release
+**/obj/
 *.log
 *.bak
 *.o
