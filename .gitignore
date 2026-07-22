@@ -1,0 +1,12 @@
+Debug
+Release
+*.log
+*.bak
+*.o
+*.d
+*.elf
+*.bin
+*.map
+*.hex
+*.lst
+*.snapshot
