@@ -61,6 +61,8 @@ void Delay_MS(uint32_t ms);
  */
 void Clear_SysTick_MS(void);
 
+void Delay_Us(uint32_t us);
+
 void USART_Printf_Init(uint32_t baudrate);
 void SDI_Printf_Enable(void);
 

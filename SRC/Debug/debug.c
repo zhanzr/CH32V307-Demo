@@ -83,6 +83,29 @@ void Clear_SysTick_MS(void)
     __enable_irq();
 }
 
+#include <stdint.h>
+#include "ch32v30x.h"
+
+/**
+ * @brief Simple, non-accurate microsecond delay using pure C.
+ * @param us Microseconds to delay.
+ */
+static void Delay_Us_Inaccurate(uint32_t us)
+{
+// At 144 MHz, a volatile decrement loop takes ~6 to 8 CPU cycles per iteration.
+    // ~20 iterations per microsecond keeps timing close for a software loop.
+    volatile uint32_t count = us * 20;
+    
+    while (count > 0)
+    {
+        count--;
+    }
+}
+
+void Delay_Us(uint32_t us) {
+    Delay_Us_Inaccurate(us);
+}
+
 /*********************************************************************
  * @fn      USART_Printf_Init
  *
