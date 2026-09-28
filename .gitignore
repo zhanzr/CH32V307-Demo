@@ -1,4 +1,5 @@
 **/obj/
+**/build/
 *.log
 *.bak
 *.o

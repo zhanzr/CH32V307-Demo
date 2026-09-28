@@ -1,0 +1,114 @@
+# WebServer - CH32V307VCT6 (CH32V307 EVT) bare-metal build/flash
+#
+# Targets:   make            build build/WebServer.elf
+#            make hex        build build/WebServer.hex
+#            make flash      program build/WebServer.hex via WCH-Link (OpenOCD)
+#            make size       print section sizes
+#            make clean      remove build/
+#
+# Toolchain: MounRiver Studio 2 bundled RISC-V GCC 15 ("riscv32-wch-elf").
+#            Run from Git Bash / MSYS2 (bash + make + rm on PATH), or add
+#            <MRS2>\resources\app\resources\win32\others\Build_Tools\Make\bin
+#            to PATH to use the bundled make.exe.
+#            Override with: make MRS2=... OPENOCD=... OPENOCD_CFG=...
+#
+# Flashing needs a WCH-Link (wlink) probe on the board's SWDIO/SDIO pins.
+# Links the shared WCH net lib (wchnet) from the board-root NetLib/ folder
+# and uses the project-local 256K FLASH / 64K RAM linker script (Ld/Link.ld).
+
+PROJ := WebServer
+
+.DEFAULT_GOAL := all
+
+# --- Toolchain ---
+MRS2        ?= D:/MounRiver/MounRiver_Studio2/resources/app/resources/win32
+GCC15_BIN   ?= $(MRS2)/components/WCH/Toolchain/RISC-V Embedded GCC15/bin
+CC          := $(GCC15_BIN)/riscv32-wch-elf-gcc
+OBJCOPY     := $(GCC15_BIN)/riscv32-wch-elf-objcopy
+SIZE        := $(GCC15_BIN)/riscv32-wch-elf-size
+OPENOCD     ?= $(MRS2)/components/WCH/OpenOCD/OpenOCD/bin/openocd.exe
+OPENOCD_CFG ?= $(MRS2)/components/WCH/OpenOCD/OpenOCD/bin/wch-riscv.cfg
+
+# --- Paths ---
+ROOT   := $(CURDIR)
+SRC    := $(abspath $(ROOT)/../../../SRC)
+NETLIB := $(abspath $(ROOT)/../../NetLib)
+BUILD  := build
+
+# --- Include paths (from .cproject) ---
+INCLUDES := \
+    -I$(NETLIB) \
+    -I$(ROOT)/HTTP \
+    -I$(SRC)/Core \
+    -I$(SRC)/Debug \
+    -I$(SRC)/Peripheral/inc \
+    -I$(ROOT)/User
+
+# --- Compile flags (from .cproject) ---
+ARCHFLAGS := -march=rv32imac_xw -mabi=ilp32 -msmall-data-limit=8 -msave-restore
+CFLAGS    := $(ARCHFLAGS) -fmax-errors=20 -O1 -fmessage-length=0 -fsigned-char \
+             -ffunction-sections -fdata-sections -fno-common \
+             -Wunused -Wuninitialized -std=gnu11
+CFLAGS    += $(INCLUDES) -MMD -MP
+
+# --- Sources -> objects ---
+PROJ_SRCS := $(wildcard $(ROOT)/User/*.c) \
+             $(wildcard $(ROOT)/HTTP/*.c)
+NET_SRCS  := $(wildcard $(NETLIB)/eth_driver_10M.c)
+SHRD_SRCS := $(wildcard $(SRC)/Core/*.c) \
+             $(wildcard $(SRC)/Debug/*.c) \
+             $(wildcard $(SRC)/Peripheral/src/*.c)
+ASMS      := $(filter %/startup_ch32v30x_D8C.S,$(wildcard $(SRC)/Startup/*.S))
+
+OBJS := $(patsubst $(ROOT)/%,build/%,$(PROJ_SRCS:.c=.o)) \
+        $(patsubst $(NETLIB)/%.c,build/net_%.o,$(NET_SRCS)) \
+        $(patsubst $(SRC)/%.c,build/src_%.o,$(SHRD_SRCS)) \
+        $(patsubst $(SRC)/%.S,build/src_%.o,$(ASMS))
+
+$(BUILD)/%.o: $(ROOT)/%.c
+	@mkdir -p $(dir $@)
+	"$(CC)" $(CFLAGS) -c -o $@ $<
+
+$(BUILD)/net_%.o: $(NETLIB)/%.c
+	@mkdir -p $(dir $@)
+	"$(CC)" $(CFLAGS) -c -o $@ $<
+
+$(BUILD)/src_%.o: $(SRC)/%.c
+	@mkdir -p $(dir $@)
+	"$(CC)" $(CFLAGS) -c -o $@ $<
+
+$(BUILD)/src_%.o: $(SRC)/%.S
+	@mkdir -p $(dir $@)
+	"$(CC)" $(ARCHFLAGS) -c -o $@ $<
+
+# --- Header dependencies (generated with -MMD -MP) ---
+DEPS := $(OBJS:.o=.d)
+-include $(DEPS)
+
+# --- Link / hex ---
+ELF := $(BUILD)/$(PROJ).elf
+HEX := $(BUILD)/$(PROJ).hex
+LDS := $(ROOT)/Ld/Link.ld
+
+all: $(ELF)
+hex: $(HEX)
+
+$(ELF): $(OBJS)
+	@mkdir -p $(dir $@)
+	"$(CC)" $(ARCHFLAGS) -T $(LDS) -nostartfiles -Xlinker --gc-sections \
+		-L$(NETLIB) -Wl,-Map,$(BUILD)/$(PROJ).map --specs=nano.specs \
+		-u _printf_float --specs=nosys.specs -o $@ $(OBJS) -lm -lwchnet -lprintf
+
+$(HEX): $(ELF)
+	"$(OBJCOPY)" -O ihex $< $@
+
+flash: $(HEX)
+	"$(OPENOCD)" -f "$(OPENOCD_CFG)" -c "program $(abspath $(HEX)) verify reset exit"
+
+size: $(ELF)
+	"$(SIZE)" $<
+
+clean:
+	$(RM) -r $(BUILD)
+
+.PHONY: all hex flash size clean

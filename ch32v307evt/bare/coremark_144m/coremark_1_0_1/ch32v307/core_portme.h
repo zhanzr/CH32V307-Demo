@@ -61,9 +61,13 @@
  */
 #include <stdint.h>
 
-#define	FLAGS_STR	"-Ofast"
+/* Keep in sync with the CFLAGS in the project Makefile. */
+#define	FLAGS_STR	"-Ofast -ffp-contract=fast -funroll-loops"
 #ifndef ITERATIONS
-#define ITERATIONS  4000
+
+/* 4000 iterations took 9.64 s @144 MHz with the flags above, below CoreMark's
+ * 10 s minimum for a valid result; 5000 keeps a comfortable margin (~12 s). */
+#define ITERATIONS  5000
 #endif
 
 #include <time.h>
