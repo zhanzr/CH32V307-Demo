@@ -1,8 +1,8 @@
-# WebServer - CH32V307VCT6 (CH32V307 EVT) bare-metal build/flash
+# eth_http_server - CH32V307VCT6 (CH32V307 EVT) e_server web server
 #
-# Targets:   make            build build/WebServer.elf
-#            make hex        build build/WebServer.hex
-#            make flash      program build/WebServer.hex via WCH-Link (OpenOCD)
+# Targets:   make            build build/eth_http_server.elf
+#            make hex        build build/eth_http_server.hex
+#            make flash      program build/eth_http_server.hex via WCH-Link (OpenOCD)
 #            make size       print section sizes
 #            make clean      remove build/
 #
@@ -16,7 +16,12 @@
 # Links the shared WCH net lib (wchnet) from the board-root NetLib/ folder
 # and uses the project-local 256K FLASH / 64K RAM linker script (Ld/Link.ld).
 
-PROJ := WebServer
+PROJ := eth_http_server
+
+# Regenerate the bundled site after editing ../../e_server/web/ :
+#   make web    -> python ../../e_server/build_web.py --out User/web_assets.h
+web:
+	cd ../../e_server && python build_web.py --out ../bare/eth_http_server/User/web_assets.h
 
 .DEFAULT_GOAL := all
 
@@ -97,7 +102,7 @@ $(ELF): $(OBJS)
 	@mkdir -p $(dir $@)
 	"$(CC)" $(ARCHFLAGS) -T $(LDS) -nostartfiles -Xlinker --gc-sections \
 		-L$(NETLIB) -Wl,-Map,$(BUILD)/$(PROJ).map --specs=nano.specs \
-		-u _printf_float --specs=nosys.specs -o $@ $(OBJS) -lm -lwchnet -lprintf
+		-u _printf_float --specs=nosys.specs -o $@ $(OBJS) -lm -lwchnet
 
 $(HEX): $(ELF)
 	"$(OBJCOPY)" -O ihex $< $@
@@ -111,4 +116,4 @@ size: $(ELF)
 clean:
 	$(RM) -r $(BUILD)
 
-.PHONY: all hex flash size clean
+.PHONY: all hex flash size clean web

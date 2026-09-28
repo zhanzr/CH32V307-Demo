@@ -17,7 +17,7 @@ line — no IDE needed.
 | `bare/adc_temp_internal`      | Internal temperature sensor via ADC                                  |
 | `bare/dhry_144m`              | Dhrystone 2.1 @ 144 MHz: 331,565 Dhrystones/s (1.310 DMIPS/MHz)      |
 | `bare/coremark_144m`          | CoreMark 1.0 @ 144 MHz: 414.9 it/s                                   |
-| `bare/WebServer`              | Ethernet web server (WCH net lib, 10M PHY)                           |
+| `bare/eth_http_server`        | e_server embedded web server (static IP 192.168.5.100, WCH net lib)  |
 
 Shared code is **not** duplicated per project:
 
@@ -25,7 +25,9 @@ Shared code is **not** duplicated per project:
   (288K flash + 32K RAM layout), referenced by all projects. The WCH example
   projects live next to it in `drivers/` and share the same `SRC` tree.
 - `NetLib/` (this folder) — WCH Ethernet drivers + `libwchnet.a`, used by
-  `bare/WebServer`.
+  `bare/eth_http_server`.
+- `e_server/` (this folder) — the single-page web site served by
+  `bare/eth_http_server` (packed into its `User/web_assets.h`).
 
 ## Building from the CLI
 

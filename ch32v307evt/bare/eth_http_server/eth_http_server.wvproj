@@ -49,7 +49,7 @@
 				"name": "*.wvproj"
 			}
 		],
-		"projectName": "WebServer",
+		"projectName": "eth_http_server",
 		"architecture": "RISC-V",
 		"projectType": "c"
 	},
@@ -365,7 +365,7 @@
 	"flashConfig": {
 		"mcutype": "CH32V30x",
 		"address": "0x08000000",
-		"target_path": "obj/WebServer.hex",
+		"target_path": "obj/eth_http_server.hex",
 		"clkSpeed": "High",
 		"debug_interface_mode": "1-wire serial",
 		"erase": true,
@@ -446,8 +446,8 @@
 			"showDebugOutputTimestamps": true
 		},
 		"reserve": {
-			"PROGRAM_NAME": "obj/WebServer.elf",
-			"PROJECT_ATTR": "WebServer",
+			"PROGRAM_NAME": "obj/eth_http_server.elf",
+			"PROJECT_ATTR": "eth_http_server",
 			"PROJECT_BUILD_CONFIG_AUTO_ATTR": true,
 			"PROJECT_BUILD_CONFIG_ID_ATTR": "",
 			"ATTR_BUILD_BEFORE_LAUNCH_ATTR": 2,
