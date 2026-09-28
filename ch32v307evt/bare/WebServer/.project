@@ -24,12 +24,12 @@
     <link>
       <name>Core</name>
       <type>2</type>
-      <location>PARENT-2-PROJECT_LOC/SRC/Core</location>
+      <location>PARENT-3-PROJECT_LOC/drivers/SRC/Core</location>
     </link>
     <link>
       <name>Debug</name>
       <type>2</type>
-      <location>PARENT-2-PROJECT_LOC/SRC/Debug</location>
+      <location>PARENT-3-PROJECT_LOC/drivers/SRC/Debug</location>
     </link>
     <link>
       <name>NetLib</name>
@@ -39,12 +39,12 @@
     <link>
       <name>Peripheral</name>
       <type>2</type>
-      <location>PARENT-2-PROJECT_LOC/SRC/Peripheral</location>
+      <location>PARENT-3-PROJECT_LOC/drivers/SRC/Peripheral</location>
     </link>
     <link>
       <name>Startup</name>
       <type>2</type>
-      <location>PARENT-2-PROJECT_LOC/SRC/Startup</location>
+      <location>PARENT-3-PROJECT_LOC/drivers/SRC/Startup</location>
     </link>
   </linkedResources>
   <filteredResources>

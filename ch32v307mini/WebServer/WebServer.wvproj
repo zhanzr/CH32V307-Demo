@@ -23,11 +23,11 @@
 		"linkedFolders": [
 			{
 				"name": "Core",
-				"location": "../../SRC/Core"
+				"location": "../../drivers/SRC/Core"
 			},
 			{
 				"name": "Debug",
-				"location": "../../SRC/Debug"
+				"location": "../../drivers/SRC/Debug"
 			},
 			{
 				"name": "NetLib",
@@ -35,11 +35,11 @@
 			},
 			{
 				"name": "Peripheral",
-				"location": "../../SRC/Peripheral"
+				"location": "../../drivers/SRC/Peripheral"
 			},
 			{
 				"name": "Startup",
-				"location": "../../SRC/Startup"
+				"location": "../../drivers/SRC/Startup"
 			}
 		],
 		"removedResources": [

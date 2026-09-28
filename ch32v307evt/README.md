@@ -4,7 +4,7 @@ Chip: **CH32V307VCT6** (CH32V30x_D8C, 288 KB flash / 64 KB RAM build used)
 
 - Debug adapter: **WCH-Link** (wlink, RV mode)
 - Debug serial: USART1 (PA9 TX), **115200 baud** (8N1) — all projects print
-  here (`printf` retargeted in `SRC/Debug/debug.c`)
+  here (`printf` retargeted in `drivers/SRC/Debug/debug.c`)
 
 ## Projects
 
@@ -21,8 +21,9 @@ line — no IDE needed.
 
 Shared code is **not** duplicated per project:
 
-- `SRC/` (repo root) — Core / Debug / Peripheral library / Startup / `Ld/Link.ld`
-  (288K flash + 32K RAM layout), referenced by all projects.
+- `drivers/SRC/` (repo root) — Core / Debug / Peripheral library / Startup / `Ld/Link.ld`
+  (288K flash + 32K RAM layout), referenced by all projects. The WCH example
+  projects live next to it in `drivers/` and share the same `SRC` tree.
 - `NetLib/` (this folder) — WCH Ethernet drivers + `libwchnet.a`, used by
   `bare/WebServer`.
 
@@ -63,7 +64,8 @@ reset need nothing but `make flash` and a WCH-Link probe.
 1. Copy an existing project folder in `bare/` to a new name.
 2. Edit `User/main.c` for your application.
 3. In the new `Makefile` change `PROJ :=` (and the flag block if needed).
-   Sources are picked up by wildcard from `User/`, plus the shared `SRC/` tree.
+   Sources are picked up by wildcard from `User/`, plus the shared
+   `drivers/SRC/` tree.
 
 The leftover `.cproject` / `.project` / `.mrs` files only matter for the
 optional MounRiver Studio IDE import; the CLI workflow does not use them.

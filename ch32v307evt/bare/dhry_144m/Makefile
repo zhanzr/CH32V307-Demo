@@ -32,7 +32,7 @@ OPENOCD_CFG ?= $(MRS2)/components/WCH/OpenOCD/OpenOCD/bin/wch-riscv.cfg
 
 # --- Paths ---
 ROOT  := $(CURDIR)
-SRC   := $(abspath $(ROOT)/../../../SRC)
+SRC   := $(abspath $(ROOT)/../../../drivers/SRC)
 BUILD := build
 
 # --- Include paths (from .cproject) ---
