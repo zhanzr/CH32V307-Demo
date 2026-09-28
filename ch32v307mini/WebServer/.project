@@ -34,7 +34,7 @@
     <link>
       <name>NetLib</name>
       <type>2</type>
-      <location>PARENT-1-PROJECT_LOC/NetLib</location>
+      <location>PARENT-2-PROJECT_LOC/NetLib</location>
     </link>
     <link>
       <name>Peripheral</name>

@@ -280,7 +280,7 @@ static void api_info(u8 socketid)
 
 static void serve_public(u8 socketid, const char *path)
 {
-#if defined(embedded_files_count) && embedded_files_count > 0
+#ifdef embedded_files_count
     for (unsigned i = 0; i < embedded_files_count; i++)
     {
         if (strcmp (path, embedded_files[i].path) == 0)

@@ -7,8 +7,8 @@ in socket mode. It serves the same bundled single-page site and API:
 - Site source of truth: [`../../e_server/`](../../e_server/) (adapted from the
   f746 original: **one LED on PA0**, sensor tab with the **two ADC1 internal
   channels** - Vrefint + die temperature, no VBAT channel on the CH32V307).
-- `User/web_assets.h` is packed from `e_server/web/` by `build_web.py`
-  (gzip page, CSS/JS inlined, 4.7 KB - no images, the board has 256 KB flash).
+- `User/web_assets.h` is packed from `e_server/web/` + `public/` by
+  `build_web.py` (gzip page + the small board photo `board_1_little.png`).
 
 ## Network configuration (static, no DHCP)
 
@@ -45,7 +45,7 @@ flash-stored configuration).
 | `POST /api/leds`     | body `{"leds":[0]}` -> applies, `{"leds":[...]}` |
 | `GET /api/adc`       | `{"vrefint_mv":3296.6,"temp_c":21.5,"ts":...}`  |
 | `GET /api/info`      | `{"arch":"riscv","lan_ip":"192.168.5.100",...}` |
-| `GET /public/*`      | 404 (no files embedded - flash budget)          |
+| `GET /public/board_1_little.png` | the board photo from the bundle (29.9 KB) |
 
 The console (USART1, PA9, WCH-Link CDC @ 115200) prints the boot banner, the
 static IP and one `HTTP <method> <path>` line per request.
@@ -64,7 +64,7 @@ static IP and one `HTTP <method> <path>` line per request.
 * Float `printf` needs plain newlib-nano (`-u _printf_float`); do **not**
   link WCH's `-lprintf` (its printf drops `%f` output).
 * Uses the project-local 256K FLASH / 64K RAM linker script (`Ld/Link.ld`)
-  and the board-root `NetLib/` (wchnet + 10M PHY drivers).
+  and the repo-root `NetLib/` (wchnet + 10M PHY drivers, shared by all boards).
 
 ## Build & flash
 

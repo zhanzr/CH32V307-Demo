@@ -31,7 +31,7 @@
 			},
 			{
 				"name": "NetLib",
-				"location": "../NetLib"
+				"location": "../../../NetLib"
 			},
 			{
 				"name": "Peripheral",

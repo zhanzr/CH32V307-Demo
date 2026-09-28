@@ -6,11 +6,11 @@ internal channels** (Vrefint + die temperature - the CH32V307 has no VBAT
 channel, so there are two plots), plus a host-side C backend that mirrors the
 API the board's embedded server implements (`bare/eth_http_server`).
 The web assets are bundled into C arrays by a build script (inline CSS/JS,
-gzip the page) so they can be served straight from flash on the MCU.
+gzip the page, embed the image raw) so they can be served straight from
+flash on the MCU.
 
 This is a port of the `f7-demo/nucleo-f746/e_server` original; the frontend
-was adapted (1 LED, 2 sensor plots, no board photo - flash budget) and the
-`public/` folder is intentionally empty.
+was adapted (1 LED, 2 sensor plots, one small board photo - flash budget).
 
 ## Layout
 
@@ -20,9 +20,9 @@ e_server/
     index.html     single page, three tabs
     style.css
     app.js
-  public/          (empty - see note below)
+  public/          images served to the page (embedded into web_assets.h)
   build_web.py     bundle: inline CSS/JS -> gzip page -> C arrays (--out to reuse)
-  web_assets.h     generated C arrays (page, no images)
+  web_assets.h     generated C arrays (page + image + lookup table)
   server.c         reference C backend (host-side)
   Makefile / build.sh
 ```
@@ -79,7 +79,7 @@ Then open `http://localhost:8080/`.
 [ web/app.js     ] --+
 
 index.html -> gzip -> index_html_gz[]   (served with Content-Encoding: gzip)
-public/*   -> raw byte arrays + lookup table (none on this board)
+public/*   -> raw byte arrays + lookup table (board_1_little.png)
 ```
 
 * The page is served gzipped (browser decompresses via `Content-Encoding: gzip`).

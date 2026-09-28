@@ -24,8 +24,8 @@ Shared code is **not** duplicated per project:
 - `drivers/SRC/` (repo root) — Core / Debug / Peripheral library / Startup / `Ld/Link.ld`
   (288K flash + 32K RAM layout), referenced by all projects. The WCH example
   projects live next to it in `drivers/` and share the same `SRC` tree.
-- `NetLib/` (this folder) — WCH Ethernet drivers + `libwchnet.a`, used by
-  `bare/eth_http_server`.
+- `NetLib/` (repo root) — WCH Ethernet drivers + `libwchnet.a` (chip-level
+  library, shared by all boards), used by `bare/eth_http_server`.
 - `e_server/` (this folder) — the single-page web site served by
   `bare/eth_http_server` (packed into its `User/web_assets.h`).
 
@@ -74,4 +74,4 @@ optional MounRiver Studio IDE import; the CLI workflow does not use them.
 
 ## Board
 
-![screenshoot](board_images/board_1.webp "screenshoot")
+![screenshoot](board_images/board_1.png "screenshoot")
