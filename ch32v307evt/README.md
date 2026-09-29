@@ -18,6 +18,7 @@ line — no IDE needed.
 | `bare/dhry_144m`              | Dhrystone 2.1 @ 144 MHz: 331,565 Dhrystones/s (1.310 DMIPS/MHz)      |
 | `bare/coremark_144m`          | CoreMark 1.0 @ 144 MHz: 414.9 it/s                                   |
 | `bare/eth_http_server`        | e_server embedded web server (static IP 192.168.5.100, WCH net lib)  |
+| `bare/nv3030b_md183_240x284_cst816d` | TK018F3716 240x284 NV3030B LCD + CST816D touch, alternating soft/hardware SPI2 + I2C2 |
 
 Shared code is **not** duplicated per project:
 
@@ -71,6 +72,21 @@ reset need nothing but `make flash` and a WCH-Link probe.
 
 The leftover `.cproject` / `.project` / `.mrs` files only matter for the
 optional MounRiver Studio IDE import; the CLI workflow does not use them.
+
+## Spare SPI / I2C interfaces
+
+Pin usage on this board: Ethernet (internal 10M PHY, fixed pins) PA1/PA2/PA7
++ RJ45 LEDs PC0/PC1, debug USART1 PA9, user LED PA0, user button PB6.
+Everything else is free, which leaves:
+
+- **SPI2 = the spare SPI**: NSS **PB12**, SCK **PB13**, MISO **PB14**,
+  MOSI **PB15**. SPI1 (SCK PA5 / MISO PA6 / MOSI PA7, as used by the
+  `drivers/SPI/2Lines_FullDuplex` example) is *not* fully available here -
+  PA7 is taken by the Ethernet CRS_DV.
+- **I2C2 = the spare I2C**: SCL **PB10**, SDA **PB11** (fixed mapping, no
+  remap). I2C1's default pins are PB6/PB7 (PB6 is the button), but its
+  alternate mapping PB8/PB9 (as used by the `drivers/I2C/I2C_7bit_Mode`
+  example: `GPIO_Remap_I2C1`) is also fully free.
 
 ## Board
 
